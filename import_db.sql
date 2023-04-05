@@ -5,7 +5,7 @@ CREATE TABLE users (
 
 );
 
-CREATE TABLE questions (
+CREATE TABLE questions (    -- ask about tables connections
     id INTEGER PRIMARY KEY, 
     title TEXT NOT NULL,
     body TEXT NOT NULL,
@@ -20,5 +20,11 @@ CREATE TABLE questions_follows (
     question_id INTEGER NOT NULL, 
 
     FOREIGN KEY (user_id) REFERENCES questions(author_id),
+    FOREIGN KEY (question_id) REFERENCES questions(id)
+);
+
+CREATE TABLE replies (
+    question_id INTEGER NOT NULL,
+    reply TEXT NOT NULL,
     FOREIGN KEY (question_id) REFERENCES questions(id)
 );
