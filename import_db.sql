@@ -7,7 +7,7 @@ CREATE TABLE users (
 
 );
 
-CREATE TABLE questions (    -- ask about tables connections
+CREATE TABLE questions ( 
     id INTEGER PRIMARY KEY, 
     title TEXT NOT NULL,
     body TEXT NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE question_likes (
     question_id INTEGER NOT NULL,
 
     FOREIGN KEY (user_who_liked) REFERENCES users(id),
-    FOREIGN KEY (question_id) REFERENCES quesions(id)
+    FOREIGN KEY (question_id) REFERENCES questions(id)
 );
 
 
@@ -72,17 +72,17 @@ VALUES
 INSERT INTO
     replies (body, question_id, replier_id, reply_id) 
 VALUES
-    ('I''m doing good', 1, 4),
+    ('I''m doing good', 1, 4, NULL),
     ('How about you?', 1, 1, 1),
-    ('Chicken and rice', 2, 2),
-    ('Super warm', 3, 2);
+    ('Chicken and rice', 2, 2, NULL),
+    ('Super warm', 3, 2, NULL);
 
 INSERT INTO
     question_likes (user_who_liked, question_id)
 VALUES
-    (1, 2)
-    (3, 1)
-    (4, 2)
+    (1, 2),
+    (3, 1),
+    (4, 2);
 
 
 
