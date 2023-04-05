@@ -58,16 +58,31 @@ VALUES
 INSERT INTO
     questions (title, body, author_id)
 VALUES
-    ('Hello', 'How are you?', (SELECT id FROM users WHERE fname = 'Anton' AND lname = 'James')),
-    ('Hi', 'What''s for lunch?', (SELECT id FROM users WHERE fname = 'Joshua' AND lname = 'Kim')),
-    ('Not much', 'Weather is fine', (SELECT id FROM users WHERE fname = 'Anton' AND lname = 'James'));
+    ('Hello', 'How are you?', 1),
+    ('Hi', 'What''s for lunch?', 2),
+    ('Not much', 'Weather is fine', 1);
 
 INSERT INTO
     questions_follows (author_id, question_id)
 VALUES
-    ((SELECT id FROM users WHERE id = 1), (SELECT id FROM questions WHERE id = 1)),
-    ((SELECT id FROM users WHERE id = 2), (SELECT id FROM questions WHERE id = 2)),
-    ((SELECT id FROM users WHERE id = 1), (SELECT id FROM questions WHERE id = 3));
+    (1, 1),
+    (2, 2),
+    (1, 3);
+
+INSERT INTO
+    replies (body, question_id, replier_id, reply_id) 
+VALUES
+    ('I''m doing good', 1, 4),
+    ('How about you?', 1, 1, 1),
+    ('Chicken and rice', 2, 2),
+    ('Super warm', 3, 2);
+
+INSERT INTO
+    question_likes (user_who_liked, question_id)
+VALUES
+    (1, 2)
+    (3, 1)
+    (4, 2)
 
 
 
