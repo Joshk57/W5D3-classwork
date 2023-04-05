@@ -164,16 +164,16 @@ class QuestionsFollows
     def self.followers_for_question_id(question_id)
         followers = QuestionsDatabase.instance.execute(<<-SQL, question_id)
         SELECT
-            *
+            id, fname, lname
         FROM
             users
         JOIN
             questions_follows ON users.id = questions_follows.author_id
-        JOIN
-            actors ON castings.actor_id = actors.id
         WHERE
-            actors.name = 'Harrison Ford'
+            question_id = users.id
         SQL
+
+        followers.map { |data| Users.new(data) }
     end
 
 end
