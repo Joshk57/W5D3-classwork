@@ -127,6 +127,10 @@ class Questions
         Users.new(author_data.first)
     end
 
+    def replies
+        Replies.find_by_question_id(self.id)
+    end
+
 end
 
 class QuestionsFollows
@@ -155,6 +159,10 @@ class QuestionsFollows
         @id = questions_follows_data['id']
         @author_id = questions_follows_data['author_id']
         @question_id = questions_follows_data['question_id']
+    end
+
+    def self.followers_for_question_id(question_id)
+        
     end
 
 end
@@ -209,7 +217,7 @@ class Replies
         SQL
         return nil unless reply.length > 0
 
-        Replies.new(reply.first)
+        reply.map { |data| Replies.new(data) }
     end
 
     def initialize(replies_data)
@@ -219,7 +227,72 @@ class Replies
         @replier_id = replies_data['replier_id']
         @reply_id = replies_data['reply_id']
     end
+    def author
+        author_data = QuestionsDatabase.instance.execute(<<-SQL, self.replier_id) 
+        SELECT
+            *
+        FROM
+            users
+        WHERE
+            id = ?
 
+        SQL
+        return nil unless author_data.length > 0
+
+        Users.new(author_data.first)
+    end
+    def question
+        question_data = QuestionsDatabase.instance.execute(<<-SQL, self.question_id) 
+        SELECT
+            *
+        FROM
+            questions
+        WHERE
+            id = ?
+
+        SQL
+        return nil unless question_data.length > 0
+
+        Questions.new(question_data.first)
+    end
+
+    def parent_reply
+        reply_data = QuestionsDatabase.instance.execute(<<-SQL, self.question_id) 
+        SELECT
+            *
+        FROM
+            replies
+        WHERE
+            question_id = ?
+
+        SQL
+        return nil unless reply_data.length > 0
+
+        raw_data = reply_data.map {|data| Replies.new(data) }
+        raw_data.each do |reply|
+            return reply if reply.reply_id == nil
+        end
+
+    end
+
+    def child_replies
+        reply_data = QuestionsDatabase.instance.execute(<<-SQL, self.question_id) 
+        SELECT
+            *
+        FROM
+            replies
+        WHERE
+            question_id = ?
+
+        SQL
+        return nil unless reply_data.length > 0
+
+        raw_data = reply_data.map {|data| Replies.new(data) }
+        raw_data.select do |reply|
+            reply.reply_id != nil
+        end
+
+    end
 end
 
 
