@@ -57,6 +57,10 @@ class Users
         Users.new(user.first)
     end
 
+    def authored_questions
+        Questions.find_by_author_id(self.id)
+    end
+
 end
 
 
@@ -80,6 +84,21 @@ class Questions
         return nil unless question.length > 0
 
         Questions.new(question.first)
+    end
+
+    def self.find_by_author_id(author_id)
+        question = QuestionsDatabase.instance.execute(<<-SQL, author_id) 
+        SELECT
+            *
+        FROM
+            questions
+        WHERE
+            author_id = ?
+
+        SQL
+        return nil unless question.length > 0
+
+        question.map { |data|  Questions.new(data) }    
     end
 
     def initialize(questions_data)
@@ -141,7 +160,37 @@ class Replies
         SQL
         return nil unless reply.length > 0
 
-       Replies.new(reply.first)
+        Replies.new(reply.first)
+    end
+
+    def self.find_by_replier_id(replier_id)
+        reply = QuestionsDatabase.instance.execute(<<-SQL, replier_id) 
+        SELECT
+            *
+        FROM
+            replies
+        WHERE
+            replier_id = ?
+
+        SQL
+        return nil unless reply.length > 0
+
+        Replies.new(reply.first)
+    end
+
+    def self.find_by_question_id(question_id)
+        reply = QuestionsDatabase.instance.execute(<<-SQL, question_id) 
+        SELECT
+            *
+        FROM
+            replies
+        WHERE
+            question_id = ?
+
+        SQL
+        return nil unless reply.length > 0
+
+        Replies.new(reply.first)
     end
 
     def initialize(replies_data)
